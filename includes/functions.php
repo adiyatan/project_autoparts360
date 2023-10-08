@@ -130,6 +130,76 @@ function login($data)
 function editProfile($data)
 {
     global $conn;
+    session_start();
+    $id_user = $_SESSION['id'];
 
-    
+    // Sanitize and validate the input data
+    $username = htmlspecialchars($data["username"]);
+    $firstName = htmlspecialchars(ucwords($data["firstName"]));
+    $lastName = htmlspecialchars(ucwords($data["lastName"]));
+    $address = htmlspecialchars($data["address"]);
+    $password = mysqli_real_escape_string($conn, $data["password"]);
+
+    // Check if the user provided a new profile picture
+    $newProfilePicture = uploadProfilePicture();
+
+    // Check if the password field is not empty (if the user wants to change the password)
+    if (!empty($password)) {
+        // Encrypt the new password
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
+        // Update the user's information with the new password and profile picture
+        $sql = "UPDATE users SET username = '$username', first_name = '$firstName', last_name = '$lastName', 
+                full_address = '$address', password = '$password', profile_picture = '$newProfilePicture' 
+                WHERE id = '$id_user'";
+
+        echo "<script>alert('Success edit profile');</script>";
+    } else {
+        // Update the user's information without changing the password
+        $sql = "UPDATE users SET username = '$username', first_name = '$firstName', last_name = '$lastName', 
+                full_address = '$address', profile_picture = '$newProfilePicture' 
+                WHERE id = '$id_user'";
+
+        echo "<script>alert('Success edit profile');</script>";
+    }
+
+    if (mysqli_query($conn, $sql)) {
+        return true;
+    } else {
+        echo "<script>alert('Failed to update profile.');</script>";
+        return false;
+    }
+}
+
+function uploadProfilePicture()
+{
+    // Check if a new profile picture is uploaded
+    if (isset($_FILES['profilePhoto']) && !empty($_FILES['profilePhoto']['name'])) {
+        $filename = $_FILES['profilePhoto']['name'];
+        $filesize = $_FILES['profilePhoto']['size'];
+        $tmpname = $_FILES['profilePhoto']['tmp_name'];
+
+        // Validate and handle the uploaded profile picture
+        $validImageExtensions = ['jpg', 'jpeg', 'png'];
+        $imageExtension = explode('.', $filename);
+        $imageExtension = strtolower(end($imageExtension));
+
+        if (!in_array($imageExtension, $validImageExtensions)) {
+            echo "<script>alert('Not an image.');</script>";
+            return ''; // Return an empty string to keep the current profile picture.
+        }
+
+        if ($filesize > 3000000) {
+            echo "<script>alert('Image is too large. Max 3MB.');</script>";
+            return ''; // Return an empty string to keep the current profile picture.
+        }
+
+        $newFilename = uniqid() . '.' . $imageExtension;
+
+        move_uploaded_file($tmpname, '../assets/img/' . $newFilename);
+
+        return $newFilename;
+    } else {
+        return ''; // Return an empty string if no new picture is uploaded.
+    }
 }

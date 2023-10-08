@@ -4,14 +4,16 @@ require '../includes/functions.php';
 session_start();
 $id_user = $_SESSION['id'];
 
+$message = '';
+
 if (isset($_POST["submit"])) {
   $result = editProfile($_POST);
-  if (!$result) {
-    $message = '<div class="alert alert-danger">Save data success</div>';
+  if ($result === true) {
+    $message = '<div class="alert alert-success">Profile updated successfully</div>';
+  } else {
+    $message = '<div class="alert alert-danger">Failed to update profile</div>';
   }
 }
-
-$message='';
 
 ?>
 
@@ -82,8 +84,29 @@ $message='';
     margin: 0 auto;
   }
 
+  /* Tambahkan kode berikut ke dalam CSS Anda */
+  .profile-image-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 80%;
+  }
 
-  #saveChanges:hover {
+  .profile-image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+
+  #submit:hover {
     background-color: #0047ab;
     color: #fff;
   }
@@ -122,65 +145,74 @@ $message='';
   </nav>
 
   <!-- User Edit Modal -->
-  <div class="modal fade" id="userEditModal" tabindex="-1" role="dialog" aria-labelledby="userEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="userEditModalLabel">Edit User Profile</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Form for editing user profile -->
-          <form id="userEditForm">
-            <?php echo $message; ?>
-            <div class="mb-3">
-              <?php
-              $select = mysqli_query($conn, "SELECT * FROM `users` WHERE id = '$id_user'") or die('query failed');
-              if (mysqli_num_rows($select) > 0) {
-                $fetch = mysqli_fetch_assoc($select);
-              }
-              if ($fetch['profile_picture'] == '') {
-                echo '<img src="../../assets/img/6.png">';
-              } else {
-                echo '<img src="../../assets/img/' . $fetch['profile_picture'] . '">';
-              }
-              ?>
-              <br>
-              <label for="profilePhoto">Profile Photo</label>
-              <input type="file" class="form-control" id="profilePhoto" name="profilePhoto" value='<?= $fetch["gambar_user"]; ?>'>
-              <!-- Tampilkan foto profil saat ini -->
+  <form method="post" action="" enctype="multipart/form-data">
+    <div class="modal fade" id="userEditModal" tabindex="-1" role="dialog" aria-labelledby="userEditModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="userEditModalLabel">Edit User Profile</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container">
+              <!-- Form for editing user profile -->
+              <div class="form-container">
+                <!-- Di dalam modal-body -->
+                <div class="mb-3 text-center">
+                  <?php
+                  $select = mysqli_query($conn, "SELECT * FROM `users` WHERE id = '$id_user'") or die('query failed');
+                  if (mysqli_num_rows($select) > 0) {
+                    $fetch = mysqli_fetch_assoc($select);
+                  }
+                  ?>
+                  <div class="profile-image-container">
+                    <?php if ($fetch['profile_picture'] == '') : ?>
+                      <img src="../../assets/img/6.png" alt="Default Profile Image" class="profile-image">
+                    <?php else : ?>
+                      <img src="../../assets/img/<?php echo $fetch['profile_picture']; ?>" alt="Profile Image" class="profile-image">
+                    <?php endif; ?>
+                  </div>
+                  <br>
+                  <label for="profilePhoto" class="btn btn-primary" style="margin-top: -10px;">Choose Image</label>
+                  <input type="file" class="form-control" id="profilePhoto" name="profilePhoto" style="display: none;">
+                  <img id="previewImage" src="" alt="Preview" style="margin-top:12px; max-width: 100px; max-height: 100px; display: none;">
+                  <!-- Tampilkan foto profil saat ini -->
+                </div>
+
+                <div class="mb-3">
+                  <label for="username">Username</label>
+                  <input type="text" class="form-control" id="username" name="username" value="<?php echo $fetch['username']; ?>">
+                </div>
+                <div class="mb-3">
+                  <label for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $fetch['first_name']; ?>">
+                </div>
+                <div class="mb-3">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $fetch['last_name']; ?>">
+                </div>
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input type="text" class="form-control" id="address" name="address" value="<?php echo $fetch['full_address']; ?>">
+                </div>
+                <div class="mb-3">
+                  <label for="password">New Password</label>
+                  <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <p><?php echo $message; ?></p>
+              </div>
             </div>
-            <div class="mb-3">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" id="username" name="username" value="<?php echo $fetch['username']; ?>" >
-            </div>
-            <div class="mb-3">
-              <label for="firstName">First Name</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $fetch['first_name']; ?>">
-            </div>
-            <div class="mb-3">
-              <label for="lastName">Last Name</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $fetch['last_name']; ?>">
-            </div>
-            <div class="mb-3">
-              <label for="address">Address</label>
-              <input type="text" class="form-control" id="address" name="address" value="<?php echo $fetch['full_address']; ?>">
-            </div>
-            <div class="mb-3">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" id="password" name="password">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveChanges">Save Changes</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" id="submit" name="submit">Save Changes</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </form>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -190,17 +222,37 @@ $message='';
     document.getElementById('userModal').addEventListener('click', function() {
       $('#userEditModal').modal('show');
     });
+  </script>
+  <script>
+    // Add this code inside your JavaScript
+    document.getElementById('profilePhoto').addEventListener('change', function() {
+      const fileInput = this;
+      const previewImage = document.getElementById('previewImage');
 
-    document.getElementById('saveChanges').addEventListener('click', function() {
-      const username = document.getElementById('username').value;
-      const profilePhoto = document.getElementById('profilePhoto').value;
-      const firstName = document.getElementById('firstName').value;
-      const lastName = document.getElementById('lastName').value;
-      const address = document.getElementById('address').value;
-      const password = document.getElementById('password').value;
+      // Check if a file is selected
+      if (fileInput.files.length > 0) {
+        const selectedFile = fileInput.files[0];
 
+        // Check if the selected file is an image
+        if (selectedFile.type.startsWith('image/')) {
+          const reader = new FileReader();
 
-      $('#userEditModal').modal('hide');
+          // Update the preview image source with the selected file
+          reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+          };
+
+          reader.readAsDataURL(selectedFile);
+        } else {
+          // Display an error message if the selected file is not an image
+          alert('Please select a valid image file.');
+          fileInput.value = ''; // Clear the file input
+        }
+      } else {
+        // Hide the preview image if no file is selected
+        previewImage.style.display = 'none';
+      }
     });
   </script>
 </body>
