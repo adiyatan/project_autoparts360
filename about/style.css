@@ -1,0 +1,246 @@
+/* styles.css */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 5px;
+}
+
+.navbar {
+  background: linear-gradient(to right, #003366, #000000);
+  border-bottom: 1px solid #444;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-family: "Montserrat", sans-serif;
+  font-size: 24px;
+  color: #fff;
+}
+
+.navbar-nav .nav-link {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  color: #fff;
+}
+
+.navbar-scrolled {
+  background: rgba(0, 51, 102, 0.9);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .nav-link i {
+  margin-right: 5px;
+  color: #fff;
+}
+
+.hero-section {
+  background: linear-gradient(to right, #003366, #000000);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-section h1 {
+  font-family: "Playfair Display", serif;
+  font-size: 48px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.hero-section p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 40px;
+}
+
+.hero-section .btn {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
+.carousel-item img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.about-section {
+  background: linear-gradient(to right, #f1f1f1, #d3d3d3);
+  padding: 100px 0;
+}
+
+.about-section h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  color: #000;
+}
+
+.about-section p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  color: #333;
+}
+
+.about-section .btn {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
+.language-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.language-toggle button {
+  margin: 5px;
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.language-toggle button:focus {
+  outline: none;
+}
+
+.contact-section {
+  background-color: #002147;
+  color: #fff;
+  padding: 100px 0;
+}
+
+.contact-section .form-group label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  color: #fff;
+}
+
+.contact-section .form-control {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+  color: #000;
+  background-color: #fff;
+}
+
+.contact-section .form-control::placeholder {
+  color: #666;
+}
+
+.contact-section .btn-primary {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.contact-section .btn-primary:hover {
+  background-color: #0056b3;
+  cursor: pointer;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeInAnimation 1s ease-in forwards;
+}
+
+@keyframes fadeInAnimation {
+  to {
+    opacity: 1;
+  }
+}
+
+.success-message {
+  display: none;
+}
+
+.success-message.show {
+  display: block;
+}
+
+/* Add media query for smaller screens (max-width: 767px) */
+@media screen and (max-width: 767px) {
+  .navbar {
+    padding: 10px;
+  }
+
+  .navbar-brand {
+    font-size: 20px;
+  }
+
+  .navbar-nav .nav-link {
+    font-size: 16px;
+  }
+
+  .hero-section h1 {
+    font-size: 36px;
+  }
+
+  .hero-section p {
+    font-size: 16px;
+  }
+
+  .about-section h2 {
+    font-size: 28px;
+  }
+
+  .about-section p {
+    font-size: 16px;
+  }
+
+  .contact-section .form-group label {
+    font-size: 16px;
+  }
+
+  .contact-section .form-control {
+    font-size: 16px;
+  }
+
+  .contact-section .btn-primary {
+    font-size: 16px;
+  }
+
+  .carousel-item img {
+    height: 250px;
+  }
+
+  .hero-section {
+    padding: 50px 0;
+  }
+
+  .about-section {
+    padding: 50px 0;
+  }
+
+  .contact-section {
+    padding: 50px 0;
+  }
+}
