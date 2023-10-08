@@ -4,18 +4,15 @@ require 'includes/functions.php';
 
 $message = '';
 
-$registrationData = isset($_SESSION['registration_data']) ? $_SESSION['registration_data'] : array();
-
 if (isset($_POST["submit"])) {
     $result = register($_POST);
     if ($result) {
         header("Location: login.php?message=success");
         exit;
     } else {
-        // Simpan data yang diisi oleh pengguna dalam sesi
-        $_SESSION['registration_data'] = $_POST;
+        $registrationData = $_POST;
         $message = '<div class="alert alert-danger">Failed to register!</div>';
-    }
+    }    
 }
 ?>
 <!DOCTYPE html>
@@ -333,14 +330,14 @@ if (isset($_POST["submit"])) {
             <form class="row g-3 needs-validation" novalidate id="registration-form" onsubmit="validateForm(event)" action="" method="post" enctype="multipart/form-data">
                 <div class="col-md-6">
                     <label for="first-name" class="form-label">First name</label>
-                    <input type="text" class="form-control" id="first-name" name="first-name" required>
+                    <input type="text" class="form-control" id="first-name" name="first-name" required value="<?php echo isset($registrationData['first-name']) ? $registrationData['first-name'] : ''; ?>">
                     <div class="invalid-feedback">
                         Please provide your first name.
                     </div>
                 </div>
                 <div class="col-md-6">
                     <label for="last-name" class="form-label">Last name</label>
-                    <input type="text" class="form-control" id="last-name" name="last-name" required>
+                    <input type="text" class="form-control" id="last-name" name="last-name" required value="<?php echo isset($registrationData['last-name']) ? $registrationData['last-name'] : ''; ?>">
                     <div class="invalid-feedback">
                         Please provide your last name.
                     </div>
@@ -369,14 +366,14 @@ if (isset($_POST["submit"])) {
                 </div>
                 <div class="col-md-4">
                     <label for="zip" class="form-label">Zip</label>
-                    <input type="number" class="form-control" name="zip" id="zip" required>
+                    <input type="number" class="form-control" name="zip" id="zip" required value="<?php echo isset($registrationData['zip']) ? $registrationData['zip'] : ''; ?>">
                     <div class="invalid-feedback">
                         Please provide a valid zip.
                     </div>
                 </div>
                 <div class="col-md-8">
                     <label for="full-address" class="form-label">Full Address</label>
-                    <input type="text" class="form-control" id="full-address" name="full-address" required>
+                    <input type="text" class="form-control" id="full-address" name="full-address" required value="<?php echo isset($registrationData['full-address']) ? $registrationData['full-address'] : ''; ?>">
                     <div class="invalid-feedback">
                         Please provide your full address.
                     </div>
@@ -389,7 +386,7 @@ if (isset($_POST["submit"])) {
                     <label for="username" class="form-label">Username</label>
                     <div class="input-group">
                         <span class="input-group-text" id="username-addon">@</span>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <input type="text" class="form-control" id="username" name="username" required value="<?php echo isset($registrationData['username']) ? $registrationData['username'] : ''; ?>">
                         <div class="invalid-feedback">
                             Please choose a username.
                         </div>

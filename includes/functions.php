@@ -30,8 +30,8 @@ function register($data)
     $username = htmlspecialchars($data["username"]);
     $password = mysqli_real_escape_string($conn, $data["password"]);
 
-    $gambar = upload();
-    if (!$gambar) {
+    $picture = upload();
+    if (!$picture) {
         return false;
     }
 
@@ -49,8 +49,8 @@ function register($data)
     $password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert data into the database
-    $sql = "INSERT INTO users (first_name, last_name, province, city, zip, full_address, username, password) 
-            VALUES ('$firstName', '$lastName', '$province', '$city', '$zip', '$fullAddress', '$username', '$password')";
+    $sql = "INSERT INTO users (first_name, last_name, province, city, zip, full_address, username, password, profile_picture) 
+            VALUES ('$firstName', '$lastName', '$province', '$city', '$zip', '$fullAddress', '$username', '$password', '$picture')";
 
     if (mysqli_query($conn, $sql)) {
         return true;
@@ -64,36 +64,67 @@ function register($data)
 
 function upload()
 {
-    $namafile = $_FILES['profile-picture']['name'];
-    $ukuranfile = $_FILES['profile-picture']['size'];
+    $filename = $_FILES['profile-picture']['name'];
+    $filesize = $_FILES['profile-picture']['size'];
     $tmpname = $_FILES['profile-picture']['tmp_name'];
 
-    //cek apakah ekstensi itu gambar
-    $ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
-    $ekstensiGambar = explode('.', $namafile);
-    $ekstensiGambar = strtolower(end($ekstensiGambar));
-    if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
+    if (empty($filename)) {
+        return 'customer.png';
+    }
+
+    $validImageExtensions = ['jpg', 'jpeg', 'png'];
+    $imageExtension = explode('.', $filename);
+    $imageExtension = strtolower(end($imageExtension));
+    if (!in_array($imageExtension, $validImageExtensions)) {
         echo "<script>
-                alert('bukan gambar');
+                alert('Not an image.');
                 </script>";
         return false;
     }
 
-    //ukuran data
-    if ($ukuranfile > 3000000) {
+    if ($filesize > 3000000) {
         echo "<script>
-                alert('gambar kebesaran');
+                alert('Image is too large.Max 3mb');
                 </script>";
         return false;
     }
 
-    //generate
-    $namaFileBaru = uniqid();
-    $namaFileBaru .= '.';
-    $namaFileBaru .= $ekstensiGambar;
+    $newFilename = uniqid() . '.' . $imageExtension;
 
-    //lolos
-    move_uploaded_file("$tmpname", 'img/' . $namaFileBaru);
+    move_uploaded_file($tmpname, 'assets/img/' . $newFilename);
 
-    return $namaFileBaru;
+    return $newFilename;
+}
+
+function login($data)
+{
+    global $conn;
+
+    $username = htmlspecialchars($data["username"]);
+    $password = $data["password"];
+
+    // Retrieve the user's data from the database
+    $query = "SELECT * FROM users WHERE username = '$username'";
+    $result = mysqli_query($conn, $query);
+
+    if (!$result || mysqli_num_rows($result) === 0) {
+        return false;
+    }
+
+    $user = mysqli_fetch_assoc($result);
+
+    // Compare the provided password with the hashed password from the database
+    if (password_verify($password, $user['password'])) {
+        // Passwords match, so the login is successful
+        if ($user['role'] === 'admin') {
+            header("Location: admin/index.php");
+        } else {
+            header("Location: public/index.php");
+        }
+        exit;
+    } else {
+        // Passwords do not match
+        echo "<script>alert('Login failed. Incorrect password.');</script>";
+        return false;
+    }
 }

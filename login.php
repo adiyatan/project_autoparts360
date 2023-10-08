@@ -1,8 +1,19 @@
-<?php 
+<?php
+require 'includes/functions.php';
+
 $message = '';
+if (isset($_POST["submit"])) {
+    $result = login($_POST);
+    if (!$result) {
+        $message = '<div class="alert alert-danger">Failed to Login!</div>';
+    }
+}
+
 if (isset($_GET['message']) && $_GET['message'] === 'success') {
     $message = '<div class="alert alert-success">Successful register! Please login.</div>';
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +26,8 @@ if (isset($_GET['message']) && $_GET['message'] === 'success') {
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
     <style>
         body {
-            background-color: #f2f2f2; /* Ganti warna background dengan gradasi */
+            background-color: #f2f2f2;
+            /* Ganti warna background dengan gradasi */
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
@@ -32,8 +44,10 @@ if (isset($_GET['message']) && $_GET['message'] === 'success') {
         .login-form {
             background-color: #fff;
             padding: 40px;
-            border-radius: 20px; /* Ubah border-radius menjadi 20px */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Tambahkan efek bayangan yang lebih lembut */
+            border-radius: 20px;
+            /* Ubah border-radius menjadi 20px */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            /* Tambahkan efek bayangan yang lebih lembut */
             max-width: 400px;
             width: 100%;
             animation: fadeInDown 1s ease;
@@ -53,7 +67,8 @@ if (isset($_GET['message']) && $_GET['message'] === 'success') {
         .login-btn {
             background-color: #0047ab;
             color: #fff;
-            padding: 14px 24px; /* Tambahkan padding agar tombol lebih besar */
+            padding: 14px 24px;
+            /* Tambahkan padding agar tombol lebih besar */
             border: none;
             border-radius: 30px;
             cursor: pointer;
@@ -119,10 +134,13 @@ if (isset($_GET['message']) && $_GET['message'] === 'success') {
 
         .header {
             color: #0047ab;
-            font-size: 48px; /* Ubah ukuran font menjadi lebih besar */
+            font-size: 48px;
+            /* Ubah ukuran font menjadi lebih besar */
             font-weight: 700;
-            margin-bottom: 40px; /* Tambahkan margin agar jarak lebih besar */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Efek bayangan teks */
+            margin-bottom: 40px;
+            /* Tambahkan margin agar jarak lebih besar */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            /* Efek bayangan teks */
         }
 
         .text-center a {
@@ -162,21 +180,21 @@ if (isset($_GET['message']) && $_GET['message'] === 'success') {
         <h1 class="header">AutoParts360</h1>
         <div class="login-form">
             <h2 class="text-center">Login</h2>
-            <form>
+            <form method="post" action="" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
                 </div>
                 <div class="form-group forgot-password">
                     <a href="#">Forgot Password</a>
                 </div>
                 <?php echo $message; ?>
                 <div class="form-group text-center">
-                    <button type="submit" class="login-btn">Login</button>
+                    <button type="submit" class="login-btn" name="submit">Login</button>
                 </div>
             </form>
             <div class="text-center">
