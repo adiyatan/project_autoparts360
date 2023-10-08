@@ -103,7 +103,6 @@ function login($data)
     $username = htmlspecialchars($data["username"]);
     $password = $data["password"];
 
-    // Retrieve the user's data from the database
     $query = "SELECT * FROM users WHERE username = '$username'";
     $result = mysqli_query($conn, $query);
 
@@ -113,18 +112,24 @@ function login($data)
 
     $user = mysqli_fetch_assoc($result);
 
-    // Compare the provided password with the hashed password from the database
     if (password_verify($password, $user['password'])) {
-        // Passwords match, so the login is successful
+        session_start();
+        $_SESSION['id'] = $user['id'];
+        $_SESSION['username'] = $username;
+        $_SESSION['role'] = $user['role'];
+
         if ($user['role'] === 'admin') {
             header("Location: admin/index.php");
         } else {
             header("Location: public/index.php");
         }
         exit;
-    } else {
-        // Passwords do not match
-        echo "<script>alert('Login failed. Incorrect password.');</script>";
-        return false;
     }
+}
+
+function editProfile($data)
+{
+    global $conn;
+
+    
 }
