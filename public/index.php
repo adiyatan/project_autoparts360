@@ -1,6 +1,21 @@
 <?php
+session_start();
 
+$username = $_SESSION['username'];
 
+if (!isset($username)) {
+    header("Location: ../login.php");
+    exit;
+}
+
+if (isset($_GET['logout'])) {
+    // Hapus semua data sesi
+    session_destroy();
+
+    // Redirect ke halaman login
+    header("Location: ../index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +28,21 @@
     <link rel="stylesheet" href="assets/css/styleIndex.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <style>
+        /* CSS untuk mengatur tampilan teks di bawah "container" */
+        .under-construction {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .under-construction p {
+            margin: 10px 0;
+        }
+    </style>
 
 </head>
 
@@ -33,6 +63,16 @@
     <div class="container mt-4">
         <div class="custom-container">
 
+            <div class="under-construction">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <p>We apologize for the inconvenience. Our website is currently undergoing maintenance, and we anticipate it will be completed by the end of October.</p>
+                <p>Thank you for your patience.</p>
+                <a href="?logout=1" class="btn btn-danger">Log Out</a>
+            </div>
             <!-- badge -->
             <!-- <?php include 'includes/public/badge.php'; ?> -->
 
